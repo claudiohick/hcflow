@@ -89,19 +89,29 @@ func (s *Service) PRForBranch(branch string) (*PRState, error) {
 
 // CreatePR creates a pull request and returns the PR state.
 func (s *Service) CreatePR(title, body, base, head string) (*PRState, error) {
-	out, err := s.gh("pr", "create",
+	// `gh pr create` outputs just the PR URL — no --json flag available.
+	url, err := s.gh("pr", "create",
 		"--title", title,
 		"--body", body,
 		"--base", base,
 		"--head", head,
-		"--json", "number,title,url,state",
 	)
 	if err != nil {
 		return nil, err
 	}
+	url = strings.TrimSpace(url)
+
+	// Fetch structured data via gh pr view.
+	out, err := s.gh("pr", "view", url,
+		"--json", "number,title,url,state,mergeable,headRefName,baseRefName,statusCheckRollup,labels",
+	)
+	if err != nil {
+		// View failed — return minimal state from the URL.
+		return &PRState{URL: url, Title: title}, nil
+	}
 	var pr PRState
 	if err := json.Unmarshal([]byte(out), &pr); err != nil {
-		return nil, fmt.Errorf("parsing created PR: %w", err)
+		return &PRState{URL: url, Title: title}, nil
 	}
 	return &pr, nil
 }

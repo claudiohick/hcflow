@@ -156,6 +156,18 @@ func (s *Service) Pull() error {
 	return err
 }
 
+// RemoteBranchExists checks if a branch exists on origin.
+func (s *Service) RemoteBranchExists(branch string) bool {
+	out, err := s.run("ls-remote", "--heads", "origin", branch)
+	return err == nil && strings.TrimSpace(out) != ""
+}
+
+// PushBranch pushes a specific branch to origin with tracking.
+func (s *Service) PushBranch(branch string) error {
+	_, err := s.run("push", "-u", "origin", branch)
+	return err
+}
+
 // PushUpstream pushes the current branch to origin with tracking.
 func (s *Service) PushUpstream(branch string) error {
 	_, err := s.run("push", "--set-upstream", "origin", branch)

@@ -93,6 +93,19 @@ You can accept the suggestion or provide your own.`,
 			info("%d commit(s)", count)
 			fmt.Println()
 
+			if count == 0 {
+				warn("Branch %q has 0 commits ahead of %q", branch, base)
+				fmt.Print("Are you sure you want to create an empty PR? [y/N] ")
+				reader := bufio.NewReader(os.Stdin)
+				ans, _ := reader.ReadString('\n')
+				ans = strings.TrimSpace(strings.ToLower(ans))
+				if ans != "y" && ans != "yes" {
+					fmt.Println("Aborted.")
+					return nil
+				}
+				fmt.Println()
+			}
+
 			// Suggest title
 			suggested := pr.SuggestTitle(branch, commits)
 			fmt.Printf("Suggested title: %s\n\n", cyan.Sprint(suggested))
@@ -106,6 +119,15 @@ You can accept the suggestion or provide your own.`,
 			// Validate conventional commit
 			if err := pr.ValidatePRTitle(title); err != nil {
 				return err
+			}
+
+			// Ensure base branch exists on remote (handles newly initialized repos)
+			if !ctx.Git.RemoteBranchExists(base) {
+				info("Base branch %q not found on remote — pushing base branch first…", base)
+				if err := ctx.Git.PushBranch(base); err != nil {
+					return fmt.Errorf("failed to push base branch %q to remote: %w", base, err)
+				}
+				success("base branch %q pushed to remote", base)
 			}
 
 			// Push
