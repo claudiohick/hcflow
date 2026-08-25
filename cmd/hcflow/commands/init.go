@@ -297,8 +297,10 @@ jobs:
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-`, defaultBranch), nil
+          target-branch: %s
+`, defaultBranch, defaultBranch), nil
 }
+
 
 func releasePleaseConfig(owner, repo string) string {
 	return fmt.Sprintf(`{
