@@ -93,6 +93,19 @@ You can accept the suggestion or provide your own.`,
 			info("%d commit(s)", count)
 			fmt.Println()
 
+			if count == 0 {
+				warn("Branch %q has 0 commits ahead of %q", branch, base)
+				fmt.Print("Are you sure you want to create an empty PR? [y/N] ")
+				reader := bufio.NewReader(os.Stdin)
+				ans, _ := reader.ReadString('\n')
+				ans = strings.TrimSpace(strings.ToLower(ans))
+				if ans != "y" && ans != "yes" {
+					fmt.Println("Aborted.")
+					return nil
+				}
+				fmt.Println()
+			}
+
 			// Suggest title
 			suggested := pr.SuggestTitle(branch, commits)
 			fmt.Printf("Suggested title: %s\n\n", cyan.Sprint(suggested))
