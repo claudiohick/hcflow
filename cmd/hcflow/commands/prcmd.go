@@ -121,6 +121,15 @@ You can accept the suggestion or provide your own.`,
 				return err
 			}
 
+			// Ensure base branch exists on remote (handles newly initialized repos)
+			if !ctx.Git.RemoteBranchExists(base) {
+				info("Base branch %q not found on remote — pushing base branch first…", base)
+				if err := ctx.Git.PushBranch(base); err != nil {
+					return fmt.Errorf("failed to push base branch %q to remote: %w", base, err)
+				}
+				success("base branch %q pushed to remote", base)
+			}
+
 			// Push
 			fmt.Print("Pushing… ")
 			if err := ctx.Git.PushUpstream(branch); err != nil {
