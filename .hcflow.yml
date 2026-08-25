@@ -1,0 +1,21 @@
+# hcflow configuration — https://github.com/hickstein/hcflow
+schema: 1
+project:
+    name: hcflow
+git:
+    default_branch: master
+    merge_strategy: squash
+ci:
+    enabled: true
+    commands:
+        - make test
+release:
+    enabled: true
+    provider: release-please
+    strategy: semver
+github:
+    pull_requests: true
+    linear_history: true
+    required_approvals: 0
+deploy:
+    enabled: false

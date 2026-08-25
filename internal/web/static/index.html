@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hcflow</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <span class="logo">⚡ hcflow</span>
+    <span class="project-name" id="project-name">—</span>
+    <button class="refresh-btn" onclick="refresh()">↺ Refresh</button>
+  </header>
+
+  <main>
+    <div class="grid">
+
+      <!-- Repository -->
+      <section class="card" id="card-repo">
+        <h2>Repository</h2>
+        <table class="kv">
+          <tr><td>name</td><td id="repo-name">—</td></tr>
+          <tr><td>remote</td><td id="repo-remote">—</td></tr>
+          <tr><td>branch</td><td id="repo-branch">—</td></tr>
+          <tr><td>working tree</td><td id="repo-tree">—</td></tr>
+          <tr><td>ahead / behind</td><td id="repo-ahead">—</td></tr>
+          <tr><td>latest tag</td><td id="repo-tag">—</td></tr>
+        </table>
+      </section>
+
+      <!-- Current PR -->
+      <section class="card" id="card-pr">
+        <h2>Pull Request</h2>
+        <div id="pr-content">
+          <p class="muted">No open PR for current branch</p>
+        </div>
+      </section>
+
+      <!-- Release -->
+      <section class="card" id="card-release">
+        <h2>Release</h2>
+        <div id="release-content">
+          <p class="muted">No release data available</p>
+        </div>
+      </section>
+
+      <!-- Pipeline -->
+      <section class="card card-wide" id="card-pipeline">
+        <h2>Pipeline</h2>
+        <div class="pipeline" id="pipeline">
+          <div class="stage" id="stage-branch"><span class="stage-name">branch</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-pr"><span class="stage-name">PR</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-ci"><span class="stage-name">CI</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-merge"><span class="stage-name">merge</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-main"><span class="stage-name">main</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-release-please"><span class="stage-name">Release Please</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-release-pr"><span class="stage-name">Release PR</span><span class="stage-status">—</span></div>
+          <div class="arrow">↓</div>
+          <div class="stage" id="stage-release"><span class="stage-name">release</span><span class="stage-status">—</span></div>
+        </div>
+      </section>
+
+      <!-- hcflow info -->
+      <section class="card" id="card-hcflow">
+        <h2>hcflow</h2>
+        <table class="kv">
+          <tr><td>schema</td><td id="hcflow-schema">—</td></tr>
+          <tr><td>workflow</td><td id="hcflow-workflow">—</td></tr>
+          <tr><td>updated</td><td id="hcflow-updated">—</td></tr>
+        </table>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
