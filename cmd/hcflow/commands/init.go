@@ -200,6 +200,19 @@ hcflow init is idempotent — safe to run multiple times.`,
 				return nil
 			}
 
+			// Enforce squash-only merges on GitHub.
+			// This is fundamental: Release Please reads the PR title from the
+			// squash commit message on main. Without this, merge commits use a
+			// different message format and Release Please cannot parse them.
+			if cfg.Git.MergeStrategy == "squash" {
+				if err := ghSvc.EnforceSquashMerge(); err != nil {
+					warn("could not enforce squash merge on GitHub: %v", err)
+					warn("manually go to Settings → General → Merge button → enable 'Squash merging' only")
+				} else {
+					success("merge strategy: squash-only enforced on GitHub")
+				}
+			}
+
 			success("hcflow init complete")
 			fmt.Println()
 			info("Next steps:")
