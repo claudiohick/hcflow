@@ -208,3 +208,18 @@ func (s *Service) Owner() string { return s.owner }
 
 // Repo returns the repo name.
 func (s *Service) Repo() string { return s.repo }
+
+// EnforceSquashMerge configures the repo to only allow squash merges
+// and ensures the squash commit title is always the PR title.
+// This is required for Release Please to read Conventional Commit messages correctly.
+func (s *Service) EnforceSquashMerge() error {
+	_, err := s.gh("api", "-X", "PATCH",
+		fmt.Sprintf("repos/%s/%s", s.owner, s.repo),
+		"-f", "allow_squash_merge=true",
+		"-f", "allow_merge_commit=false",
+		"-f", "allow_rebase_merge=false",
+		"-f", "squash_merge_commit_title=PR_TITLE",
+		"-f", "squash_merge_commit_message=BLANK",
+	)
+	return err
+}
